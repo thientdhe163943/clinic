@@ -1,0 +1,11 @@
+-- uq_schedule_room_date_shift was a unique index on (room_id, work_date,
+-- shift) with no role dimension. It correctly blocked 2 staff of the same
+-- role double-booking a room/shift, but also incorrectly blocked a doctor
+-- and a nurse sharing the same room on the exact same shift value (e.g.
+-- both FULL_DAY), even though the application layer (findRoomConflict)
+-- already scopes its own conflict check by role and intends to allow that.
+-- Dropped rather than widened with a new denormalized role column, per
+-- this schema's own documented pattern of enforcing partial/conditional
+-- uniqueness at the application layer when MySQL/Prisma can't express it
+-- directly (see NOTES at the top of schema.prisma).
+ALTER TABLE `work_schedules` DROP INDEX `uq_schedule_room_date_shift`;
