@@ -1,0 +1,72 @@
+# compiled output
+**/dist/
+**/node_modules/
+**/.next/
+/thientd_fe/
+
+# logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+*.bkp
+
+# Tests
+/coverage
+/.nyc_output
+**/test/
+
+# IDE
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.tsbuildinfo
+
+# Local tooling and worktrees
+.tools/
+.worktrees/
+.drawio-cli-profile/
+
+# env
+.env
+.env.test
+.env.local
+.env.*.local
+
+# Local-only test DB / seed / dev helpers (not for review)
+.tmp-*.js
+scripts/seed-*.ts
+scripts/setup-test-db.js
+scripts/run-test-mode.js
+scripts/dev-faketime.js
+scripts/_trim-test-appointments.js
+
+# Prisma
+**/prisma/*.db
+
+# User-uploaded files (local disk storage — see UploadsController)
+/uploads
+
+# Tesseract.js OCR language models — auto-downloaded to cwd on first
+# recognizeText() call (see ocr.service.ts), several MB each, not source.
+*.traineddata
+
+# Local-only unit specs — giữ ở máy, KHÔNG commit/đẩy lên
+backend/src/application/use-cases/patients/create-patient.use-case.spec.ts
+backend/src/application/use-cases/services/create-service.use-case.spec.ts
+backend/src/application/use-cases/services/delete-service.use-case.spec.ts
+backend/src/application/use-cases/services/list-services.use-case.spec.ts
+backend/src/application/use-cases/services/update-service.use-case.spec.ts
+backend/src/application/use-cases/users/update-my-profile.use-case.spec.ts
+
+# Local docs / bảng tính export — KHÔNG đẩy lên
+*.xlsx

@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: clinic-mysql
+    restart: unless-stopped
+    # Force utf8mb4 for every connection regardless of what charset the
+    # client requests during handshake — without this, Prisma's default
+    # connection (which never sends `SET NAMES utf8mb4`) negotiates latin1,
+    # silently mangling any Vietnamese text written through the app even
+    # though the schema itself is utf8mb4 (bulk `mysql --default-character-set=utf8mb4 < seed.sql`
+    # loads were unaffected since that flag sets the charset explicitly).
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-character-set-client-handshake
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: clinic
+      MYSQL_USER: clinic_user
+      MYSQL_PASSWORD: clinic_pass
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Executed once (alphabetical order) when the data volume is first created.
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./backend/database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-proot_pass']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:

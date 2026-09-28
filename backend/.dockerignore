@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+test
+.env
+.env.*
+!.env.example
+database
+docs
+.git
+.gitlab-ci.yml
+uploads
+thientd_fe
+*.log

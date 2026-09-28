@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* "Brighter blue" token pass (2026-08-20, 3rd revision same day) —
+     supersedes the darker #003b79 Âu Cơ Blue with a brighter/more
+     saturated medical blue per explicit user request ("đổi màu thành màu
+     xanh dương tươi hơn"), following a Mona Media-style reference mockup.
+     Values here are the HSL conversion Tailwind's `hsl(var(--x))` usage
+     needs (computed from hex). */
+  --background: 210 40% 98%; /* #f8fafc, "Clean Background/Surface" */
+  --foreground: 222 47% 11%; /* #0f172a, slate-900 */
+  --card: 0 0% 100%; /* #ffffff */
+  --card-foreground: 222 47% 11%;
+  --primary: 216 100% 50%; /* #0066ff, "Primary Medical Blue" — CTA/interactive/brand */
+  --primary-foreground: 0 0% 100%;
+  /* No separate darker brand shade — `brand`/`bg-brand`/`text-brand`
+     (tailwind.config.ts) stay aliased to --primary so existing call sites
+     don't need touching. */
+  --brand: 216 100% 50%;
+  --brand-foreground: 0 0% 100%;
+  /* Kept as the neutral "secondary button/surface" role already used
+     across the app (Button variant="secondary", inactive tabs, filter
+     chips) — NOT the spec's "Accent Heartbeat" red, which would break
+     every existing neutral secondary button if aliased here. */
+  --secondary: 210 40% 96%; /* #f1f5f9-ish neutral surface */
+  --secondary-foreground: 215 25% 27%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%; /* #64748b, "Text Muted" */
+  --destructive: 0 75% 42%; /* #ba1a1a, "error" — unchanged, distinct from the brand-red accent below */
+  --destructive-foreground: 0 0% 100%;
+  --border: 214 32% 91%; /* #e2e8f0, "Border & Muted" */
+  --input: 214 32% 91%;
+  --ring: 216 100% 50%;
+
+  /* Icon/support accent — "Primary Container" blue (#0284c7), one step
+     deeper than --primary, for icon/support accents sitewide. */
+  --accent: 200 98% 39%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Spec's "Accent Heartbeat" (#ef4444) — used sparingly for
+     urgent/emergency accents/highlight prices, deliberately NOT wired to
+     --secondary (see above) or --destructive (that's error red, a
+     different, slightly darker hex used for form/API errors). Exposed as
+     the `brand-red` Tailwind color. */
+  --brand-red: 0 84% 60%; /* #ef4444 */
+  --brand-red-foreground: 0 0% 100%;
+
+  /* Spec's "Deep Slate / Luxury Navy" (#0f172a) — footer background, dark
+     doctors-team banner section. Exposed as the `tertiary` Tailwind color. */
+  --tertiary: 222 47% 11%; /* #0f172a */
+  --tertiary-foreground: 0 0% 100%;
+
+  /* Light primary tint for icon-circle backgrounds, banner sections, soft
+     containers. Exposed as the `primary-fixed` Tailwind color. */
+  --primary-fixed: 214 95% 93%; /* #dbeafe, light blue-100 tint */
+  --primary-fixed-foreground: 216 100% 50%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-sans), Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Print slips (invoice, CLS receipt, prescription, ...) render via
+   <PrintPortal> (components/shared/print-portal.tsx), which portals them to
+   this node appended directly to <body> — a sibling of the real app tree,
+   not nested inside it. Hidden on screen; shown full-page in print. See the
+   `@media print` rule below for why this replaced the old
+   visibility-hidden + fixed-position "print-only" scheme. */
+#print-portal-root {
+  display: none;
+}
+
+@media print {
+  /* No @page rule existed before, so printed margins fell back to whatever
+     the browser's print dialog happened to default to — inconsistent, and
+     large enough on some setups to push a receipt onto a second page.
+     Pinning A4 + a modest margin here makes every printed slip's layout
+     predictable across browsers. */
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  /* Hide the *entire* real app tree with `display: none` — unlike the old
+     `visibility: hidden` approach, this removes its layout height too, so a
+     tall dashboard page behind an open dialog can no longer make the
+     browser paginate a blank 2nd/3rd page for content that was only ever
+     hidden, never actually gone. `#print-portal-root` is a sibling of this
+     tree (appended straight to body by PrintPortal), so it's unaffected. */
+  body > :not(#print-portal-root) {
+    display: none !important;
+  }
+
+  #print-portal-root {
+    display: block;
+  }
+}
